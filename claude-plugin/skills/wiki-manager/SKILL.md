@@ -10,8 +10,9 @@ description: >
   checkpoints,
   private adapters, adapter routing, explicit wiki skill-factory requests,
   personal specialist skills, expert review,
-  specialist selection, provenance, external resource actions, or questions in a directory
-  with .wiki/ or a configured hub.
+  specialist selection, provenance, external resource actions (including
+  requests to read, review, or edit hosted documents), or questions in a
+  directory with .wiki/ or a configured hub.
 tools:
   - Read
   - Write
@@ -118,8 +119,9 @@ preserve disagreement, and record its version/hash. See
 ## Adapter Routing
 
 For an action plus URL, run `adapter route --intent <effect> --resource <url>
---json` before ingestion. On a match, read its adapter-owned guide; provider
-steps live there. A URL alone is not write authorization. See
+--json` before ingestion or generic tool advice, even when the user did not say
+"wiki." On a match, read its adapter-owned guide; provider steps live there. A
+URL alone is not write authorization. See
 [references/adapters.md](references/adapters.md).
 
 Explicit `wiki skill-factory <request>` selects the registered named adapter;
@@ -164,7 +166,10 @@ write roots → verify the manifest hash and `describe` handshake → execute a 
 JSON request through the bundled deterministic CLI → verify artifact paths and
 hashes → leave all outputs external → optionally review only `wiki-safe`
 candidates and promote the smallest useful evidence through normal wiki writes.
-Never clone, install, update, publish, or auto-promote an adapter.
+If the guide offers an agent-started interactive authorization helper, launch
+it yourself and present only its short local handoff link rather than a long
+terminal command or provider URL. Never clone, install, update, publish, or
+auto-promote an adapter.
 
 ### Personal Specialist Skills
 See [references/specialists.md](references/specialists.md).

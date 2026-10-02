@@ -136,8 +136,11 @@ declared remote effects, bind explicit approval to the exact plan hash and
 expected revision, use a caller-stable idempotency key, and require a private
 read-back-verified receipt. A request file alone is never approval.
 15. **Route external actions before ingestion.** For an action plus URL, run
-`adapter route` first. A healthy match hands off to the adapter-owned guide;
-provider steps stay private.
+`adapter route` first, even when the user did not say "wiki." A healthy match
+hands off to the adapter-owned guide; provider steps stay private. If that guide
+offers an agent-started authorization helper, launch it yourself and give the
+user only its short local handoff link rather than a long command or provider
+URL.
 16. **Specialists are methods, not credentials.** Optional instruction-only
 packages live under `HUB/.skills/`, are explicitly enabled per active topic,
 and never grant tools, write authority, professional status, or permission to
@@ -465,6 +468,13 @@ For an action plus URL, run `llm-wiki adapter route --intent <effect>
 --resource <url> --json` before ingestion. A match returns the adapter guide;
 read it and run `adapter doctor`. No-match resumes normal routing; ambiguity or
 drift fails closed.
+
+When the guide provides an agent-started authorization helper with a short
+loopback or local handoff link, start it in a persistent shell, keep it running,
+and present only the short link on its own line. Do not ask the user to change
+directories, paste repository paths, or copy long commands or provider OAuth
+URLs through a wrapping terminal. Authorization does not approve a remote
+write; plan and approval gates still apply.
 
 For an explicit `wiki skill-factory <request>` call, do not invent a URL.
 Resolve the registered `skill-factory` adapter with `adapter show`, run

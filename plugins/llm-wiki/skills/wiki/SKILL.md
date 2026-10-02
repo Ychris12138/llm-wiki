@@ -13,7 +13,8 @@ description: >
   archive wiki, archive topic, restore wiki, private adapter, adapter registry, skill-factory,
   checkpoints,
   personal specialist, specialist skill, specialist reviewer, expert lens,
-  adapter route, adapter doctor, adapter run, edit an external resource, session capture, capture context, rehydrate,
+  adapter route, adapter doctor, adapter run, read, review, or edit a hosted external resource such as a document,
+  session capture, capture context, rehydrate,
   resume from session, implementation plan, or uses
   /wiki-style shorthand in a repo with .wiki/, ~/wiki/, or a configured hub path.
 ---
@@ -117,8 +118,9 @@ preserve disagreement, and record its version/hash. See
 ## Adapter Routing
 
 For an action plus URL, run `adapter route --intent <effect> --resource <url>
---json` before ingestion. On a match, read its adapter-owned guide; provider
-steps live there. A URL alone is not write authorization. See
+--json` before ingestion or generic tool advice, even when the user did not say
+"wiki." On a match, read its adapter-owned guide; provider steps live there. A
+URL alone is not write authorization. See
 [references/adapters.md](references/adapters.md).
 
 Explicit `wiki skill-factory <request>` selects the registered named adapter;

@@ -239,7 +239,8 @@ description: >
   archive wiki, archive topic, restore wiki, private adapter, adapter registry, skill-factory,
   checkpoints,
   personal specialist, specialist skill, specialist reviewer, expert lens,
-  adapter route, adapter doctor, adapter run, edit an external resource, session capture, capture context, rehydrate,
+  adapter route, adapter doctor, adapter run, read, review, or edit a hosted external resource such as a document,
+  session capture, capture context, rehydrate,
   resume from session, implementation plan, or uses
   /wiki-style shorthand in a repo with .wiki/, ~/wiki/, or a configured hub path.
 ---

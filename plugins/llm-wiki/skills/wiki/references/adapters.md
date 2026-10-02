@@ -88,15 +88,36 @@ $LLM_WIKI adapter route --intent edit --resource '<external-url>' --json
 
 A `matched` result identifies the trusted adapter and an adapter-owned workflow
 guide. Read that guide, run `adapter doctor <id>`, and follow only its bounded
-workflow. Provider authentication, browser setup, planning constraints,
-recovery, and verification belong in the private adapter guide, not in the
-public wiki plugin. A `no-match` result permits normal routing. `ambiguous` or
-`unavailable` fails closed until the registrations are repaired.
+workflow. This lookup applies to external-resource actions even when the user
+does not mention llm-wiki explicitly. Provider authentication, browser setup,
+planning constraints, recovery, and verification belong in the private adapter
+guide, not in the public wiki plugin. A `no-match` result permits normal
+routing. `ambiguous` or `unavailable` fails closed until the registrations are
+repaired.
 
 Route lookup never echoes the resource. A URL without a concrete requested
 effect is not write authorization, and a bounded instruction authorizes only a
 faithful plan. All generic remote-write controls below still apply regardless
 of provider.
+
+## Interactive authorization handoff
+
+Follow the registered adapter's guide rather than inventing a generic login
+flow. When that guide provides an agent-started authorization helper with a
+short loopback or local handoff link:
+
+1. start the helper yourself in a persistent shell process;
+2. keep it running while the user completes authorization;
+3. present only the short handoff link on its own line;
+4. wait for the helper to finish, then retry the bounded read; and
+5. keep authentication separate from write approval.
+
+Do not ask the user to change into an adapter checkout, paste a repository path,
+or reconstruct a long command containing the resource URL. Do not print, wrap,
+or relay a long provider OAuth or signed URL when the adapter offers a short
+local handoff; terminal wrapping and TUI padding can corrupt it. If the guide
+does not provide such a helper, follow its documented fallback exactly rather
+than creating an unreviewed proxy.
 
 ## Explicit named adapter invocation
 
