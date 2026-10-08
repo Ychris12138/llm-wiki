@@ -26,6 +26,12 @@ else
   log_fail "scripts/llm-wiki-session compiles" "py_compile failed"
 fi
 
+if python3 "$SCRIPT_DIR/test-session-promotion.py"; then
+  log_pass "promotion notes preserve frontmatter and multiline content"
+else
+  log_fail "promotion notes preserve frontmatter and multiline content" "promotion regression"
+fi
+
 tmpdir="$(mktemp -d)"
 trap 'rm -rf "$tmpdir"' EXIT
 hub="$tmpdir/wiki"
@@ -220,12 +226,6 @@ if python3 -c 'import json,sys; data=json.load(sys.stdin); assert any(s.get("llm
   log_pass "list --json reports captured session"
 else
   log_fail "list --json reports captured session" "$list_output"
-fi
-
-if python3 "$SCRIPT_DIR/test-session-promotion.py"; then
-  log_pass "promotion notes preserve frontmatter and multiline content"
-else
-  log_fail "promotion notes preserve frontmatter and multiline content" "promotion regression"
 fi
 
 echo ""
