@@ -222,6 +222,12 @@ else
   log_fail "list --json reports captured session" "$list_output"
 fi
 
+if python3 "$SCRIPT_DIR/test-session-promotion.py"; then
+  log_pass "promotion notes preserve frontmatter and multiline content"
+else
+  log_fail "promotion notes preserve frontmatter and multiline content" "promotion regression"
+fi
+
 echo ""
 echo "==========================================="
 printf "Results: \033[32m%d passed\033[0m, \033[31m%d failed\033[0m, %d total\n" "$PASS" "$FAIL" "$TOTAL"

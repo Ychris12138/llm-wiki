@@ -1404,9 +1404,8 @@ def run_promote(args: argparse.Namespace) -> int:
 
         This note promotes a distilled session checkpoint into the `{args.topic}` topic raw layer. It intentionally promotes the digest, not the raw transcript.
 
-        {body.strip()}
         """
-    ).strip() + "\n"
+    ).strip() + "\n\n" + body.strip() + "\n"
     atomic_write(dest, promoted)
     topics = set(as_list(state.get("topics")))
     topics.add(args.topic)
@@ -1569,38 +1568,41 @@ def run_feedback_promote(args: argparse.Namespace) -> int:
         # Feedback Candidate Promotion: {candidate.get('id')}
 
         This note promotes a curated user-feedback candidate from `.sessions/feedback/`. It is a distilled operational lesson, not a raw transcript.
-
-        ## Distilled Lesson
-
-        {candidate.get('distilled_lesson')}
-
-        ## Redacted User Feedback Preview
-
-        > {candidate.get('text_preview')}
-
-        ## Metadata
-
-        {markdown_table([
-            ('Feedback type', candidate.get('feedback_type')),
-            ('Confidence', candidate.get('confidence')),
-            ('Strength', candidate.get('strength')),
-            ('Scope hint', candidate.get('scope_hint')),
-            ('Promotion recommendation', candidate.get('promotion_recommendation')),
-            ('Session', candidate.get('llm_wiki_session_id')),
-            ('Harness', candidate.get('harness')),
-            ('CWD', candidate.get('cwd')),
-            ('Git remote', candidate.get('git_remote')),
-            ('Git branch', candidate.get('git_branch')),
-            ('Captured at', candidate.get('ts')),
-        ])}
-
+        """
+    ).strip()
+    preview = textwrap.indent(str(candidate.get("text_preview") or "").strip(), "> ", lambda line: True).rstrip()
+    metadata = markdown_table([
+        ('Feedback type', candidate.get('feedback_type')),
+        ('Confidence', candidate.get('confidence')),
+        ('Strength', candidate.get('strength')),
+        ('Scope hint', candidate.get('scope_hint')),
+        ('Promotion recommendation', candidate.get('promotion_recommendation')),
+        ('Session', candidate.get('llm_wiki_session_id')),
+        ('Harness', candidate.get('harness')),
+        ('CWD', candidate.get('cwd')),
+        ('Git remote', candidate.get('git_remote')),
+        ('Git branch', candidate.get('git_branch')),
+        ('Captured at', candidate.get('ts')),
+    ])
+    guidance = textwrap.dedent(
+        """
         ## Usage Guidance
 
         - Use corrections and preferences as candidates for future `AGENTS.md`, skill, or workflow rule updates.
         - Treat approval/decision candidates as validation of the immediate prior context unless corroborated by session digests.
         - Do not infer broader factual claims from this feedback alone.
         """
-    ).strip() + "\n"
+    ).strip()
+    promoted = "\n\n".join([
+        promoted,
+        "## Distilled Lesson",
+        str(candidate.get("distilled_lesson") or "").strip(),
+        "## Redacted User Feedback Preview",
+        preview,
+        "## Metadata",
+        metadata,
+        guidance,
+    ]) + "\n"
     atomic_write(dest, promoted)
     status = read_json(feedback_status_path(root), {"promoted": {}})
     if not isinstance(status, dict):
