@@ -824,11 +824,7 @@ def should_write_digest(state: dict[str, Any], event: dict[str, Any], config: di
 
 def yaml_string(value: Any) -> str:
     text = "" if value is None else str(value)
-    if text == "":
-        return '""'
-    if re.fullmatch(r"[A-Za-z0-9_.:/@+ -]+", text):
-        return json.dumps(text)
-    return json.dumps(text)
+    return json.dumps(text, ensure_ascii=False)
 
 
 def yaml_list(values: list[Any]) -> str:
@@ -1266,8 +1262,13 @@ def split_frontmatter(text: str) -> tuple[dict[str, Any], str]:
                 data[key.strip()] = json.loads(value)
             except json.JSONDecodeError:
                 data[key.strip()] = []
+        elif value.startswith('"') and value.endswith('"'):
+            try:
+                data[key.strip()] = json.loads(value)
+            except json.JSONDecodeError:
+                data[key.strip()] = value.strip('"')
         else:
-            data[key.strip()] = value.strip('"')
+            data[key.strip()] = value
     return data, body
 
 

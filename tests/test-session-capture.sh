@@ -222,6 +222,12 @@ else
   log_fail "list --json reports captured session" "$list_output"
 fi
 
+if python3 "$SCRIPT_DIR/test-session-frontmatter.py"; then
+  log_pass "session frontmatter preserves scalar values across rewrites"
+else
+  log_fail "session frontmatter preserves scalar values across rewrites" "round-trip regression"
+fi
+
 echo ""
 echo "==========================================="
 printf "Results: \033[32m%d passed\033[0m, \033[31m%d failed\033[0m, %d total\n" "$PASS" "$FAIL" "$TOTAL"
