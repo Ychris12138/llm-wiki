@@ -215,6 +215,12 @@ else
   log_fail "promote creates topic raw note and index topic tag" "$promote_output"
 fi
 
+if python3 "$SCRIPT_DIR/test-session-promotion-records.py"; then
+  log_pass "promotion records stay in sync with session digest frontmatter"
+else
+  log_fail "promotion records stay in sync with session digest frontmatter" "regression test failed"
+fi
+
 list_output="$("$SESSION" --hub "$hub" list --json 2>&1)"
 if python3 -c 'import json,sys; data=json.load(sys.stdin); assert any(s.get("llm_wiki_session_id") == "codex:test-session" for s in data["sessions"])' <<<"$list_output"; then
   log_pass "list --json reports captured session"

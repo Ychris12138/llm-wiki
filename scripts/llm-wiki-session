@@ -867,7 +867,7 @@ def frontmatter_block(state: dict[str, Any], trigger: str, digest_file: Path) ->
         "topic_candidates: []",
         f"privacy: {yaml_string(state.get('privacy') or 'redacted')}",
         f"raw_transcripts: {str(bool(state.get('raw_transcripts'))).lower()}",
-        "promoted_to: []",
+        f"promoted_to: {yaml_list(as_list(state.get('promoted_to')))}",
         f"summary: {yaml_string(summary)}",
         "---",
     ]
@@ -1415,6 +1415,17 @@ def run_promote(args: argparse.Namespace) -> int:
     promoted_to.append(str(dest))
     state["promoted_to"] = sorted(set(str(item) for item in promoted_to))
     write_json(state_path(root, str(state["harness"]), str(state["native_session_id"])), state)
+    # Update only the frontmatter so local annotations in the digest survive.
+    frontmatter_end = digest_text.find("\n---\n", 4)
+    if digest_text.startswith("---\n") and frontmatter_end != -1:
+        header = digest_text[:frontmatter_end]
+        promoted_line = f"promoted_to: {yaml_list(state['promoted_to'])}"
+        header, replacements = re.subn(
+            r"^promoted_to:.*$", lambda _: promoted_line, header, count=1, flags=re.MULTILINE
+        )
+        if not replacements:
+            header += "\n" + promoted_line
+        atomic_write(digest_file, header + digest_text[frontmatter_end:])
     rebuild_indexes(root)
     append_topic_log(topic_root, f"promoted session digest {state.get('llm_wiki_session_id')} → raw/notes/{filename}")
     print(str(dest))
